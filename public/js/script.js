@@ -18,7 +18,10 @@ if (navigator.geolocation) {
 }
 
 // Initialize the map and set its view
-const map = L.map('map').setView([0,0], 16); // Use appropriate coordinates and zoom level
+//const map = L.map('map').setView([0,0], 16); // Use appropriate coordinates and zoom level
+const map = L.map('map').setView([12.973297, 77.708889], 15);
+
+
 
 // Add the tile layer to the map
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -34,6 +37,33 @@ const markers ={};
 //     iconAnchor: [19, 38], // Customize the anchor point
 //     popupAnchor: [0, -38] // Customize the popup anchor point
 // });
+
+// Define icons for Home and Office markers
+const homeIcon = new L.Icon({
+    iconUrl: '../icons/metro.png',  // You can use a custom icon if you want
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+const officeIcon = new L.Icon({
+    iconUrl: '../icons/office.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
+// Add Home marker (replace with actual coordinates)
+L.marker([12.98086, 77.70879], { icon: homeIcon })
+    .addTo(map)
+    .bindPopup('<b>Home</b>');
+
+// Add Office marker (replace with actual coordinates)
+L.marker([12.973297, 77.708889], { icon: officeIcon })
+    .addTo(map)
+    .bindPopup('<b>Office</b>');
 
 socket.on("receive-location",(data)=> {
     const {id, latitude,longitude} = data;
