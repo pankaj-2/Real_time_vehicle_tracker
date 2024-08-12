@@ -13,12 +13,31 @@ const io = socketio(server);
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname,'/public')));
 
-io.on("connection", function(socket){
+// io.on("connection", function(socket){
 
-    socket.on("send-location",function(data) {
-        io.emit("receive-location", {id: socket.id, ...data});
+//     socket.on("send-location",function(data) {
+//         io.emit("receive-location", {id: socket.id, ...data});
+//     });
+//     console.log("Connected" +socket.id);
+
+//     socket.on("disconnect", function() {
+//         io.emit("user-disconnected", socket.id);
+//     });
+// });
+
+let markerCount = 0;
+
+io.on("connection", function(socket){
+    socket.on("send-location", function(data) {
+        markerCount += 1;
+        io.emit("receive-location", {
+            id: socket.id,
+            ...data,
+            number: markerCount
+        });
     });
-    console.log("Connected" +socket.id);
+
+    console.log("Connected " + socket.id);
 
     socket.on("disconnect", function() {
         io.emit("user-disconnected", socket.id);

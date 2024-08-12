@@ -18,29 +18,18 @@ if (navigator.geolocation) {
 }
 
 // Initialize the map and set its view
-//const map = L.map('map').setView([0,0], 16); // Use appropriate coordinates and zoom level
 const map = L.map('map').setView([12.973297, 77.708889], 15);
-
-
 
 // Add the tile layer to the map
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'Pankaj ',
+    attribution: 'Pankaj',
 }).addTo(map);
 
-const markers ={};
-
-// Define a custom icon
-// const customIcon = L.icon({
-//     iconUrl: '', // Replace with the path to your custom icon
-//     iconSize: [38, 38], // Customize the size
-//     iconAnchor: [19, 38], // Customize the anchor point
-//     popupAnchor: [0, -38] // Customize the popup anchor point
-// });
+const markers = {};
 
 // Define icons for Home and Office markers
 const homeIcon = new L.Icon({
-    iconUrl: '../icons/metro.png',  // You can use a custom icon if you want
+    iconUrl: '../icons/metro.png',  // Relative to your public folder
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -65,20 +54,23 @@ L.marker([12.973297, 77.708889], { icon: officeIcon })
     .addTo(map)
     .bindPopup('<b>Office</b>');
 
-socket.on("receive-location",(data)=> {
-    const {id, latitude,longitude} = data;
-    map.setView([latitude,longitude],15);
-    if(markers[id]){
-        markers[id].setLatLng([latitude,longitude]);
-    }
-    else {
-        markers[id] = new L.marker([latitude,longitude]).addTo(map);
+socket.on("receive-location", (data) => {
+    const { id, latitude, longitude, number } = data;
+    map.setView([latitude, longitude], 15);
+    
+    if (markers[id]) {
+        markers[id].setLatLng([latitude, longitude]);
+    } else {
+        markers[id] = L.marker([latitude, longitude])
+            .addTo(map)
+            .bindPopup(`<b>Marker #${number}</b><br>Latitude: ${latitude}<br>Longitude: ${longitude}`)
+            .openPopup();
     }
 });
 
 socket.on("user-disconnected", (id) => {
-    if(markers[id]) {
+    if (markers[id]) {
         map.removeLayer(markers[id]);
-        delete markers[id]
+        delete markers[id];
     }
 });
