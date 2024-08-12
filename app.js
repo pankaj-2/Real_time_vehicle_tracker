@@ -13,6 +13,10 @@ const io = socketio(server);
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/test-css', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/css/stylesheet.css'));
+});
+
 // io.on("connection", function(socket){
 
 //     socket.on("send-location",function(data) {
